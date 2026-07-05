@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Нам есть вокруг чего объединиться — интерактивная версия</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Интерактивная версия манифеста: пять вопросов, на которые сначала отвечаешь ты.">
+<meta property="og:title" content="Нам есть вокруг чего объединиться">
+<meta property="og:description" content="Пять вопросов, на которые сначала отвечаешь ты. Потом — карта.">
+<meta property="og:image" content="https://virr.github.io/manifest/og.png">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ef">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a171b">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23d97b41"/></svg>'>
+<style>
+  :root {
+    --paper:#faf6ef; --ink:#29241d; --soft:#6f6455;
+    --accent:#b04f26; --accent-soft:#c96a3a; --line:#e6ddcd; --card:#f3ecdf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#1a171b; --ink:#eae3d7; --soft:#a79c8d;
+      --accent:#e2a557; --accent-soft:#cf9147; --line:#332d34; --card:#221e25;
+    }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    background:var(--paper); color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:1.17rem; line-height:1.68;
+    overflow:hidden; -webkit-font-smoothing:antialiased;
+  }
+  ::selection { background:var(--accent); color:var(--paper); }
+
+  /* ── chrome ── */
+  #sky {
+    position:fixed; top:0; left:0; right:0; height:64px;
+    display:flex; justify-content:center; z-index:5; pointer-events:none;
+  }
+  #sky svg { width:150px; height:64px; }
+  #sky .hor { stroke:var(--line); stroke-width:2; stroke-linecap:round; }
+  #sky .sun { fill:var(--accent); transition:cy .5s ease; }
+  #counter {
+    position:fixed; top:14px; right:16px; z-index:6;
+    font-family:system-ui,sans-serif; font-size:.72rem; letter-spacing:.08em;
+    color:var(--soft);
+  }
+  #back {
+    position:fixed; top:8px; left:10px; z-index:6;
+    background:none; border:none; color:var(--soft);
+    font-size:1.25rem; padding:.4rem .7rem; cursor:pointer; border-radius:10px;
+    font-family:system-ui,sans-serif; opacity:.85;
+  }
+  #back:hover { color:var(--accent); }
+  #back[disabled] { opacity:0; pointer-events:none; }
+
+  /* ── deck ── */
+  #deck { position:fixed; inset:0; }
+  .card {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:5.2rem 1.6rem calc(4.4rem + env(safe-area-inset-bottom));
+    max-width:36rem; margin:0 auto;
+    opacity:0; transform:translateY(26px); pointer-events:none;
+    transition:opacity .34s ease, transform .34s ease;
+    overflow-y:auto;
+  }
+  .card.on { opacity:1; transform:none; pointer-events:auto; }
+  .card.bye { opacity:0; transform:translateY(-22px); pointer-events:none; }
+
+  .k {
+    font-family:system-ui,sans-serif; font-size:.7rem; font-weight:600;
+    letter-spacing:.24em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:1rem;
+  }
+  h1 { font-size:clamp(1.9rem,7.2vw,2.9rem); line-height:1.14; font-weight:400; margin-bottom:1.2rem; text-wrap:balance; }
+  h2 { font-size:clamp(1.45rem,5.4vw,2rem); line-height:1.2; font-weight:400; margin-bottom:1.1rem; text-wrap:balance; }
+  p + p { margin-top:1rem; }
+  .pull {
+    padding-left:1.05rem; border-left:2px solid var(--accent);
+    font-size:1.32rem; line-height:1.5; margin:1.2rem 0;
+  }
+  .dim { color:var(--soft); }
+  .num {
+    font-family:system-ui,sans-serif; font-size:.8rem; font-weight:700;
+    color:var(--accent); letter-spacing:.06em; margin-bottom:.6rem;
+  }
+  b { font-weight:700; }
+
+  .opts { margin-top:1.6rem; display:flex; flex-direction:column; gap:.7rem; }
+  .opt {
+    text-align:left; background:var(--card); color:var(--ink);
+    border:1px solid var(--line); border-radius:14px;
+    padding:.95rem 1.15rem; font:inherit; font-size:1.05rem; line-height:1.45;
+    cursor:pointer; transition:border-color .15s, transform .15s;
+  }
+  .opt:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .opt:active { transform:scale(.99); }
+
+  .tap {
+    position:fixed; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom));
+    text-align:center; z-index:5; pointer-events:none;
+    font-family:system-ui,sans-serif; font-size:.74rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--soft); opacity:.8;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.75} 50%{opacity:.3} }
+  .tap.off { display:none; }
+
+  .btn {
+    display:inline-block; margin-top:1.4rem; padding:.9rem 2rem;
+    background:var(--accent); color:var(--paper);
+    font-family:system-ui,sans-serif; font-size:1rem; font-weight:650;
+    text-decoration:none; border-radius:999px; border:none; cursor:pointer;
+  }
+  .btn:hover { background:var(--accent-soft); }
+  .ghost {
+    display:inline-block; margin-top:1rem; color:var(--soft);
+    font-family:system-ui,sans-serif; font-size:.86rem; text-decoration:underline;
+    text-underline-offset:3px; cursor:pointer; background:none; border:none;
+  }
+  .ghost:hover { color:var(--accent); }
+  .sunfull { width:44px; height:44px; margin-bottom:1rem; }
+  .sunfull circle { fill:var(--accent); }
+  .sunfull line { stroke:var(--accent); stroke-width:2.4; stroke-linecap:round; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition:opacity .2s ease; transform:none !important; }
+    .tap { animation:none; }
+    #sky .sun { transition:none; }
+  }
+  @media (max-width:480px) { body { font-size:1.07rem; } .pull { font-size:1.18rem; } }
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true">
+  <svg viewBox="0 0 150 64">
+    <defs><clipPath id="skyclip"><rect x="0" y="0" width="150" height="44"/></clipPath></defs>
+    <circle class="sun" id="skysun" cx="75" cy="58" r="11" clip-path="url(#skyclip)"/>
+    <line class="hor" x1="34" y1="44" x2="116" y2="44"/>
+  </svg>
+</div>
+<button id="back" aria-label="Назад">←</button>
+<div id="counter"></div>
+<div class="tap" id="taphint">Нажми, чтобы продолжить</div>
+
+<main id="deck">
+
+<!-- ВСТУПЛЕНИЕ -->
+<section class="card">
+  <p class="k">Манифест · интерактивная версия</p>
+  <h1>Нам есть вокруг чего объединиться</h1>
+  <p class="dim">Будущее, которого мы боимся, расписано до мелочей. Будущее, которое хотим, — белое пятно.</p>
+  <p class="dim" style="margin-top:.8rem">Дальше — пять вопросов. Сначала на них ответишь ты, потом — эта карта. ≈ 7 минут.</p>
+  <button class="ghost" id="resume" style="display:none"></button>
+</section>
+
+<section class="card">
+  <p>Делиться светлой картиной мира — страшно. Пессимист не рискует ничем: сбудется плохое — «я предупреждал», не сбудется — все только рады.</p>
+  <p>Тот, кто всерьёз говорит о лучшем, рискует каждым словом.</p>
+</section>
+
+<section class="card">
+  <p>Поэтому всё, чего мы не хотим, продумано до мелочей: киберпанк с неоном по свалкам, корпорации вместо стран, выжженная планета.</p>
+  <p>А «хороший вариант» — пустое пятно на карте.</p>
+  <p class="pull">Цивилизация без мечты дрейфует в сторону самой подробной из своих карт.</p>
+</section>
+
+<section class="card">
+  <p>Этот текст — другая карта. Не прогноз и не готовая идеология: картина мира, в которой можно узнать свою — и по этому узнаванию найти друг друга.</p>
+  <p class="dim" style="margin-top:.9rem">Проверим? Отвечай честно — тут нет неправильных ответов.</p>
+</section>
+
+<!-- ВОПРОС 1 -->
+<section class="card" data-q>
+  <p class="k">Вопрос первый</p>
+  <h2>Кто ты?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a1a">Тело и мозг</button>
+    <button class="opt" data-goto="a1b">Имя, роли, моя история</button>
+    <button class="opt" data-goto="a1c">Что-то глубже этого</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a1a" data-next="w1">
+  <p>Честный ответ. Но вот загвоздка: большая часть клеток тела за годы заменилась — а ты всё ещё ты.</p>
+  <p>Кто тогда всё это время оставался на месте?</p>
+</section>
+<section class="card" data-branch id="a1b" data-next="w1">
+  <p>Но имя тебе дали. Роли надеваются и снимаются. История дописывается каждый день.</p>
+  <p>А тот, с кем всё это происходит, — кто он?</p>
+</section>
+<section class="card" data-branch id="a1c" data-next="w1">
+  <p>Значит, мы уже смотрим в одну сторону.</p>
+  <p>Давай назовём это «глубже» словами.</p>
+</section>
+
+<section class="card" id="w1">
+  <p>Закрой глаза на минуту — и наблюдай. Мысли приходят и уходят, а есть тот, кто их замечает. Чувства вспыхивают и гаснут, а есть тот, кто присутствует.</p>
+  <p>Этот тихий свидетель и есть ты. Не персонаж фильма — тот, в ком идёт фильм.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Ты — место, в котором вселенная открыла глаза и смотрит на саму себя.</p>
+  <p>И главное: свидетель во мне — той же природы, что и в тебе. На поверхности нас миллиарды. На глубине нас — одно.</p>
+</section>
+
+<!-- ВОПРОС 2 -->
+<section class="card" data-q>
+  <p class="k">Вопрос второй</p>
+  <h2>Что такое этот мир?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a2a">Случайность. Смысла нет</button>
+    <button class="opt" data-goto="a2b">Иллюзия, ловушка</button>
+    <button class="opt" data-goto="a2c">Что-то живое и осмысленное</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a2a" data-next="w2">
+  <p>Так нас учили. Но у случайности не бывает такой упрямой траектории.</p>
+  <p>Смотри.</p>
+</section>
+<section class="card" data-branch id="a2b" data-next="w2">
+  <p>Понимаю усталость, из которой так отвечают. И всё же — присмотрись к траектории.</p>
+</section>
+<section class="card" data-branch id="a2c" data-next="w2">
+  <p>Тогда вот траектория, которая это подтверждает.</p>
+</section>
+
+<section class="card" id="w2">
+  <p>Пыль собирается в звёзды. Звёзды выплавляют вещество. Вещество складывается в жизнь. Жизнь учится чувствовать, чувство — думать, мысль — осознавать себя.</p>
+  <p>Это не хаос. Это одно длинное движение — внутрь, к пробуждению.</p>
+</section>
+
+<section class="card">
+  <p>Материя — уснувшее сознание. Эволюция — история его просыпания. Камень, река, зверь, человек — ступени одного рассвета.</p>
+  <p class="pull">Ты не заброшен в мир, как в пустой холодный зал. Ты вырос из него, как лист из дерева.</p>
+</section>
+
+<section class="card">
+  <p>И с человеком это движение впервые становится добровольным: всё, что было до нас, росло вслепую — мы можем расти по собственному выбору.</p>
+  <p>Это и подарок, и ответственность.</p>
+</section>
+
+<!-- ВОПРОС 3 -->
+<section class="card" data-q>
+  <p class="k">Вопрос третий</p>
+  <h2>Тебе когда-нибудь было по-настоящему достаточно — денег, признания, впечатлений?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a3a">Да, бывает</button>
+    <button class="opt" data-goto="a3b">Нет. Всегда хочется ещё</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a3a" data-next="w3">
+  <p>Редкий дар — или высота, ещё не взятая. У большинства «достаточно» не наступает никогда: каждая вершина открывает вид на следующую.</p>
+  <p>И в этом спрятан самый точный факт о человеке.</p>
+</section>
+<section class="card" data-branch id="a3b" data-next="w3">
+  <p>У всех так. Нас учат этого стыдиться — лечить скромностью, глушить потреблением.</p>
+  <p>Зря. В этой ненасытности спрятан самый точный факт о тебе.</p>
+</section>
+
+<section class="card" id="w3">
+  <p>Жажда, которую не утоляет ничто конечное, — не поломка. Это компас.</p>
+  <p>Ты ищешь не деньги, не статус, не вещи. Ты ищешь то, у чего нет края. Конечное не может насытить того, кто внутри бесконечен.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Твоё предназначение — расти сознанием: из тесного «я» — к безграничному. Остальное — декорации пути.</p>
+  <p>Проверь по радости: глубокая приходит не от захвата, а от расширения — когда любишь, понимаешь, создаёшь, отдаёшь.</p>
+</section>
+
+<!-- ВОПРОС 4 -->
+<section class="card">
+  <p class="k">Вопрос четвёртый</p>
+  <h2>Как тогда жить?</h2>
+  <p class="dim">Пять опор. Не запреты — техника движения.</p>
+</section>
+
+<section class="card">
+  <p class="num">01</p>
+  <p><b>Держи равновесие трёх этажей.</b> Тело, ум и глубина — один дом. Заботься о теле, корми ум настоящим — и каждый день несколько минут медитации: побыть в тишине свидетелем, а не потоком мыслей.</p>
+</section>
+
+<section class="card">
+  <p class="num">02</p>
+  <p><b>Не причиняй лишней боли.</b> Ни делом, ни словом, ни мыслью: всё живое хочет жить и чувствует, как ты. Это не запрет защищаться — это отказ от жестокости, без которой можно обойтись.</p>
+</section>
+
+<section class="card">
+  <p class="num">03</p>
+  <p><b>Будь честен как сильный, а не как послушный.</b> Когда мысли, слова и дела не воюют друг с другом, человек собирается в одно — и в нём высвобождается сила. Ложь дробит. Правда собирает.</p>
+</section>
+
+<section class="card">
+  <p class="num">04</p>
+  <p><b>Используй, а не копи.</b> Вещи, деньги, знания, талант — инструменты, а не смысл. Всё, что заперто мёртвым грузом в одних руках, у кого-то отнято.</p>
+</section>
+
+<section class="card">
+  <p class="num">05</p>
+  <p><b>Служи.</b> Помогать — не жертва, а самый короткий способ стать больше: чужая жизнь становится частью твоей. Каждое действие возвращается.</p>
+  <p style="margin-top:1rem">И — двигайся. Ошибающийся, но идущий, — живее безупречного, но стоящего.</p>
+</section>
+
+<!-- ВОПРОС 5 -->
+<section class="card" data-q>
+  <p class="k">Вопрос пятый</p>
+  <h2>Где сейчас проходит граница твоих «своих»?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a5a">Семья и близкие</button>
+    <button class="opt" data-goto="a5b">Мой народ, моя страна</button>
+    <button class="opt" data-goto="a5c">Человечество</button>
+    <button class="opt" data-goto="a5d">Всё живое</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a5a" data-next="w5">
+  <p>Честно. Отсюда начинают все — и это уже любовь.</p>
+  <p>У неё есть продолжение.</p>
+</section>
+<section class="card" data-branch id="a5b" data-next="w5">
+  <p>Сильное чувство. Но у него есть тень: любовь к своим легко становится стеной против чужих — почти все большие зверства творили люди, искренне любившие «своих».</p>
+  <p>К счастью, у лестницы есть следующая ступень.</p>
+</section>
+<section class="card" data-branch id="a5c" data-next="w5">
+  <p>Большой круг. Есть ещё шире.</p>
+</section>
+<section class="card" data-branch id="a5d" data-next="w5">
+  <p>Тогда ты уже знаешь, куда ведёт эта лестница.</p>
+</section>
+
+<section class="card" id="w5">
+  <p>Лестница любви растёт: я → семья → народ → человечество → всё живое.</p>
+  <p>Звери, деревья, реки — всё, в чём спит и просыпается то же сознание, которое сейчас смотрит твоими глазами.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Твой наивысший потенциал — любовь, у которой не осталось «чужих». Не лозунг — ежедневный способ смотреть и действовать.</p>
+  <p>Это спит в каждом и просыпается от практики. Мы пришли сюда не выживать и урвать — мы пришли сделать многое, для блага всех.</p>
+</section>
+
+<!-- ГОРИЗОНТ -->
+<section class="card">
+  <p class="k">Общий горизонт</p>
+  <h2>Куда мы можем идти вместе</h2>
+  <p><b>Фундамент — каждому:</b> еда, одежда, жильё, лечение, образование — как воздух.</p>
+  <p><b>Потолок — накоплению:</b> сверхизлишек в одних руках — недостача в других. В знании и творчестве потолков нет.</p>
+  <p><b>Кооперация и совладение:</b> делом владеют те, кто его делает.</p>
+  <p><b>Разнообразие без уравниловки:</b> природа не делает двух одинаковых.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Прогресс — это не больше вещей. Это больше проснувшегося сознания: в человеке и между людьми.</p>
+</section>
+
+<!-- ВОЗРАЖЕНИЕ -->
+<section class="card" data-q>
+  <p class="k">Стоп</p>
+  <h2>Ты ведь уже хочешь возразить?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="ba">«Человек жаден. Работает только капитализм»</button>
+    <button class="opt" data-goto="bb">«Красиво, но это утопия»</button>
+    <button class="opt" data-goto="bc">Пока просто слушаю</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="ba" data-next="wo">
+  <p>Приму это возражение наполовину — и эта половина важная.</p>
+</section>
+<section class="card" data-branch id="bb" data-next="wo">
+  <p>Про утопию — через минуту, обещаю. Сначала про жадность: они связаны.</p>
+</section>
+<section class="card" data-branch id="bc" data-next="wo">
+  <p>Тогда я сам подниму самое частое возражение: «человек жаден, поэтому работает только капитализм».</p>
+</section>
+
+<section class="card" id="wo">
+  <p>Да, капитализм естественен. Он не заговор — он точная постройка на реальном этаже человеческой природы: желании иметь, сравнивать, обгонять. Потому он и пережил системы, отменявшие природу декретом.</p>
+  <p>И да: жадность, страх, зависть есть в каждом. В авторе этого текста — тоже.</p>
+</section>
+
+<section class="card">
+  <p>Но «естественно» не значит «окончательно». Когда-то естественным было «прав тот, кто сильнее» — мы переросли это, не отменив силу.</p>
+  <p>Так работает эволюция: берёт из прежней ступени лучшее и строит следующую. Возьмём золото — энергию, инициативу, размах. Оставим грязь.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Под жадностью есть этажи глубже, и к ним есть лестница: духовная практика — медитация, честность, служение. Регулярная, как спортзал. Не подвиг — гигиена.</p>
+  <p>Трансформация мира начинается с новой картины мира в одном человеке.</p>
+</section>
+
+<!-- УТРО -->
+<section class="card">
+  <p class="k">Образ будущего</p>
+  <h2>Каким может быть утро</h2>
+  <p>Представь: лет через пятьдесят или сто ты просыпаешься без фонового страха. Еда, одежда, жильё, лечение, знание есть у каждого — как воздух. Слово «выживать» осталось в исторических романах, рядом со словом «крепостной».</p>
+</section>
+
+<section class="card">
+  <p>Работа не исчезла — исчезло рабство в ней. Машинное делают машины; людям осталось человеческое. Обычное дело устроено как кооператив: им владеют те, кто его делает.</p>
+  <p>Успех — не то, сколько ты запер в хранилищах, а то, что ты оставил живым и растущим.</p>
+</section>
+
+<section class="card">
+  <p>Города стоят в зелени, рекам не нужен праздник, чтобы быть чистыми. На Марсе доращивают первые сады — продолжение ухоженной Земли, а не бегство с испорченной.</p>
+  <p>Люди не стали одинаковыми: спорят, соревнуются, влюбляются, ошибаются. Драма осталась — ушла грязь под ней.</p>
+</section>
+
+<section class="card">
+  <p class="pull">Фантастика? Посмотри на свой сегодняшний день из окна крепостной избы. Ты уже живёшь в фантастике вдвойне.</p>
+  <p>Вопрос лишь в том, в какую сторону мы рисуем подробные карты.</p>
+</section>
+
+<!-- НЕ УТОПИЯ -->
+<section class="card">
+  <p class="k">Отличие</p>
+  <h2>Почему это не очередная утопия</h2>
+  <p>Утопии начинались с чертежа идеального общества — и упирались в вопрос, куда девать неподходящих людей. Ответ всегда оказывался лагерем.</p>
+  <p>Здесь наоборот: не общество перекраивает человека — человек дорастает и пересобирает общество. Снизу. Добровольно.</p>
+</section>
+
+<section class="card">
+  <p>«А что будет с несогласными?» — Ничего. Живи как живёшь. Граница проходит не по взглядам, а по вреду — как дорожная разметка, а не тирания.</p>
+  <p class="pull">Утопия — место, которого нет. А дорога, по которой уже идут, — есть.</p>
+</section>
+
+<!-- ФИНАЛ -->
+<section class="card" id="fin">
+  <svg class="sunfull" viewBox="0 0 46 46" aria-hidden="true">
+    <circle cx="23" cy="23" r="10"/>
+    <line x1="23" y1="2" x2="23" y2="8"/><line x1="23" y1="38" x2="23" y2="44"/>
+    <line x1="2" y1="23" x2="8" y2="23"/><line x1="38" y1="23" x2="44" y2="23"/>
+    <line x1="8.2" y1="8.2" x2="12.4" y2="12.4"/><line x1="33.6" y1="33.6" x2="37.8" y2="37.8"/>
+    <line x1="8.2" y1="37.8" x2="12.4" y2="33.6"/><line x1="33.6" y1="12.4" x2="37.8" y2="8.2"/>
+  </svg>
+  <h2>Если это отзывается</h2>
+  <p class="dim">— значит, ты уже думал это сам, своими словами. Нас больше, чем кажется. Мы просто редко узнаём друг друга в шуме.</p>
+  <p class="dim" style="margin-top:.9rem">Напиши мне пару слов: кто ты, что откликнулось, чего хочешь. С одного сообщения всё и начинается.</p>
+  <div>
+    <a class="btn" href="https://t.me/Vishvashanti">Написать мне в Telegram</a>
+  </div>
+  <div>
+    <a class="ghost" href="../">Обычная версия текста</a>
+    <button class="ghost" id="restart">Пройти заново</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var N = cards.length;
+  var idx = 0, busy = false;
+  var back = document.getElementById('back');
+  var counter = document.getElementById('counter');
+  var sun = document.getElementById('skysun');
+  var hint = document.getElementById('taphint');
+  var trail = []; // history of visited indices
+
+  function isChoice(c){ return c.hasAttribute('data-q'); }
+  function isBranch(c){ return c.hasAttribute('data-branch'); }
+
+  function show(i, push){
+    if (i < 0 || i >= N) return;
+    var cur = cards[idx], nxt = cards[i];
+    if (cur !== nxt) {
+      if (push !== false) trail.push(idx);
+      cur.classList.remove('on'); cur.classList.add('bye');
+      setTimeout(function(){ cur.classList.remove('bye'); }, 360);
+    }
+    idx = i;
+    nxt.classList.add('on');
+    nxt.scrollTop = 0;
+    // progress: linear position among non-branch cards
+    var lin = cards.filter(function(c){ return !isBranch(c); });
+    var pos = lin.indexOf(nxt); if (pos < 0) pos = lin.indexOf(cards[trail[trail.length-1]]);
+    var frac = Math.max(0, pos) / (lin.length - 1);
+    sun.setAttribute('cy', 58 - frac * 26); // 58 → 32
+    counter.textContent = (pos + 1) + ' / ' + lin.length;
+    back.disabled = trail.length === 0;
+    hint.classList.toggle('off', isChoice(nxt) || i === N - 1);
+    try { localStorage.setItem('mlab-pos', String(idx)); } catch(e) {}
+  }
+
+  function nextLinear(){
+    if (isChoice(cards[idx])) return;             // выбор обязателен
+    var explicit = cards[idx].getAttribute('data-next');
+    if (explicit) { var t = document.getElementById(explicit); if (t) return show(cards.indexOf(t)); }
+    var j = idx + 1;
+    while (j < N && isBranch(cards[j])) j++;
+    if (j < N) show(j);
+  }
+
+  function goBack(){
+    if (!trail.length) return;
+    var prev = trail.pop();
+    show(prev, false);
+  }
+
+  // choice buttons
+  document.querySelectorAll('.opt').forEach(function(btn){
+    btn.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var t = document.getElementById(btn.getAttribute('data-goto'));
+      if (t) show(cards.indexOf(t));
+    });
+  });
+
+  // advance on tap (not on buttons/links)
+  document.getElementById('deck').addEventListener('click', function(ev){
+    if (ev.target.closest('a, button')) return;
+    nextLinear();
+  });
+
+  back.addEventListener('click', function(ev){ ev.stopPropagation(); goBack(); });
+
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === ' ' || ev.key === 'ArrowRight' || ev.key === 'Enter') { ev.preventDefault(); nextLinear(); }
+    if (ev.key === 'ArrowLeft' || ev.key === 'Backspace') { ev.preventDefault(); goBack(); }
+  });
+
+  // swipe
+  var tx = 0, ty = 0;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (e.target.closest('a, button')) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return; // это tap, обработает click
+    if (dy < -46 || dx < -46) nextLinear();
+    else if (dy > 46 || dx > 46) goBack();
+  }, {passive:true});
+
+  // restart / resume
+  var restart = document.getElementById('restart');
+  if (restart) restart.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    try { localStorage.removeItem('mlab-pos'); } catch(e) {}
+    trail = [];
+    show(0, false);
+  });
+  var resume = document.getElementById('resume');
+  var saved = 0;
+  try { saved = parseInt(localStorage.getItem('mlab-pos') || '0', 10) || 0; } catch(e) {}
+  if (saved > 2 && saved < N - 1 && resume) {
+    resume.style.display = 'inline-block';
+    resume.textContent = 'Продолжить, где остановился →';
+    resume.addEventListener('click', function(ev){ ev.stopPropagation(); show(saved); });
+  }
+
+  cards[0].classList.add('on');
+  show(0, false);
+})();
+</script>
+</body>
+</html>

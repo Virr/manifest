@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Человек — это направление</title>
+<meta name="description" content="Манифест: кто ты, что есть этот мир, зачем ты здесь, как жить — и каким может стать человечество.">
+<meta property="og:title" content="Человек — это направление">
+<meta property="og:description" content="Семь минут о том, кто ты, что это за мир, зачем ты здесь — и куда мы можем идти вместе.">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://virr.github.io/manifest/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ef">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a171b">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23d97b41"/></svg>'>
+<style>
+  :root {
+    --paper: #faf6ef;
+    --ink: #29241d;
+    --soft: #6f6455;
+    --accent: #b04f26;
+    --accent-soft: #c96a3a;
+    --line: #e6ddcd;
+    --card: #f3ecdf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1a171b;
+      --ink: #eae3d7;
+      --soft: #a79c8d;
+      --accent: #e2a557;
+      --accent-soft: #cf9147;
+      --line: #332d34;
+      --card: #221e25;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', 'PT Serif', serif;
+    font-size: 1.155rem;
+    line-height: 1.78;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+  main { max-width: 41rem; margin: 0 auto; padding: 0 1.35rem 4.5rem; }
+  p { hyphens: auto; -webkit-hyphens: auto; text-wrap: pretty; }
+
+  /* ── Hero ─────────────────────────────── */
+  header {
+    position: relative;
+    min-height: 92svh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 4.5rem 0 3rem;
+  }
+  header::before {
+    content: "";
+    position: absolute; z-index: -1;
+    top: -12rem; left: 50%; transform: translateX(-50%);
+    width: 60rem; height: 34rem; max-width: 160vw;
+    background: radial-gradient(ellipse closest-side at 50% 30%,
+      color-mix(in srgb, var(--accent) 13%, transparent), transparent 75%);
+    pointer-events: none;
+  }
+  .kicker {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: .72rem; font-weight: 600;
+    letter-spacing: .24em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.7rem;
+  }
+  h1 {
+    font-size: clamp(2.15rem, 8.6vw, 3.55rem);
+    line-height: 1.12; font-weight: 400; letter-spacing: -.012em;
+    text-wrap: balance;
+    margin-bottom: 1.7rem;
+  }
+  .lede { font-size: 1.23rem; color: var(--soft); max-width: 35rem; }
+  .lede em { color: var(--ink); font-style: normal; }
+  .down {
+    margin-top: 3rem;
+    font-family: system-ui, sans-serif;
+    font-size: .8rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--soft); text-decoration: none;
+  }
+  .down:hover { color: var(--accent); }
+
+  /* ── Sections ─────────────────────────── */
+  section { padding-top: 3.9rem; }
+  .q {
+    font-family: system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600;
+    letter-spacing: .24em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: .95rem;
+  }
+  h2 {
+    font-size: clamp(1.55rem, 5.2vw, 2.1rem);
+    line-height: 1.22; font-weight: 400;
+    text-wrap: balance;
+    margin-bottom: 1.45rem;
+  }
+  p + p { margin-top: 1.18rem; }
+  .pull {
+    margin: 2rem 0;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--accent);
+    font-size: 1.3rem; line-height: 1.52;
+  }
+  b { font-weight: 700; }
+
+  /* Numbered axes (section IV) */
+  .axes { list-style: none; counter-reset: ax; margin-top: 1.6rem; }
+  .axes li {
+    counter-increment: ax;
+    position: relative;
+    padding-left: 2.9rem;
+    margin-top: 1.55rem;
+  }
+  .axes li::before {
+    content: "0" counter(ax);
+    position: absolute; left: 0; top: .42em;
+    font-family: system-ui, sans-serif;
+    font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+    color: var(--accent);
+  }
+  .axes li::after {
+    content: "";
+    position: absolute; left: .1rem; top: 2em; bottom: -.4em;
+    width: 1px; background: var(--line);
+  }
+  .axes li:last-child::after { display: none; }
+
+  /* ── Sunrise dividers ─────────────────── */
+  .div { display: flex; justify-content: center; padding-top: 3.9rem; }
+  .div svg { width: 88px; height: 30px; overflow: visible; }
+  .div .sun { fill: var(--accent); }
+  .div .hor { stroke: var(--line); stroke-width: 2; stroke-linecap: round; }
+
+  /* ── CTA ──────────────────────────────── */
+  .cta {
+    margin-top: 4rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 2.6rem 1.7rem 2.7rem;
+    text-align: center;
+  }
+  .cta .fullsun { width: 46px; height: 46px; margin-bottom: 1.2rem; }
+  .cta .fullsun circle { fill: var(--accent); }
+  .cta .fullsun line { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  .cta h2 { margin-bottom: 1.05rem; }
+  .cta p { color: var(--soft); max-width: 31rem; margin-left: auto; margin-right: auto; }
+  .cta p strong { color: var(--ink); font-weight: 400; }
+  .btn {
+    display: inline-block;
+    margin-top: 1.8rem;
+    padding: .9rem 2.1rem;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: system-ui, sans-serif;
+    font-size: 1.02rem; font-weight: 650;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: transform .16s ease, background .16s ease;
+  }
+  .btn:hover { background: var(--accent-soft); transform: translateY(-1px); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  footer {
+    margin-top: 3.2rem; text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: .84rem; color: var(--soft);
+  }
+
+  /* ── Motion (progressive enhancement) ── */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      section > *, .cta, .div svg {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+      @keyframes rise {
+        from { opacity: .12; transform: translateY(14px); }
+        to   { opacity: 1;   transform: none; }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    body { font-size: 1.08rem; }
+    .pull { font-size: 1.18rem; }
+    .axes li { padding-left: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <p class="kicker">Манифест</p>
+  <h1>Человек —<br>это направление</h1>
+  <p class="lede">Семь минут о самых старых вопросах: кто ты, что это за мир, зачем ты в нём — и каким может стать человечество, если отвечать на них честно. <em>Дочитай. Если узнаешь своё — внизу есть дверь.</em></p>
+  <a class="down" href="#q1">Читать ↓</a>
+</header>
+
+<section id="q1">
+  <p class="q">Вопрос первый</p>
+  <h2>Кто ты?</h2>
+  <p>Тебя с детства приучили отвечать на это анкетой: имя, возраст, профессия, гражданство. Но имя тебе дали. Профессия сменится. Гражданство — строчка в базе данных. Даже тело не держит ответа: почти все его клетки за годы заменились новыми, а ты — всё ещё ты.</p>
+  <p>Тогда кто?</p>
+  <p>Сделай простой опыт. Закрой глаза и минуту наблюдай. Мысли приходят и уходят — а есть тот, кто их замечает. Чувства вспыхивают и гаснут — а есть тот, кто при этом присутствует. Роли надеваются и снимаются — а он остаётся. Этот тихий свидетель позади всего и есть ты. Не вещь среди вещей, а сознание. Не персонаж фильма, а тот, в ком идёт фильм.</p>
+  <p class="pull">Ты — место, в котором вселенная открыла глаза и смотрит на саму себя.</p>
+  <p>И самое важное: этот свидетель во мне — той же природы, что и в тебе. Мы различаемся телами, историями, характерами; глубже этого мы не различаемся ничем. На поверхности нас миллиарды. На глубине нас — одно.</p>
+</section>
+
+<div class="div" aria-hidden="true">
+  <svg viewBox="0 0 88 30"><defs><clipPath id="s1"><rect x="0" y="0" width="88" height="21"/></clipPath></defs><circle class="sun" cx="44" cy="27" r="7.5" clip-path="url(#s1)"/><line class="hor" x1="4" y1="21" x2="84" y2="21"/></svg>
+</div>
+
+<section>
+  <p class="q">Вопрос второй</p>
+  <h2>Что это за мир?</h2>
+  <p>Нам предлагали два ответа, и оба обесценивают. Первый: мир — случайная куча вещества, и никакого смысла в ней нет. Второй: мир — иллюзия и ловушка, из которой надо сбежать. Присмотрись — и увидишь третье.</p>
+  <p>У мира есть траектория. Пыль собирается в звёзды; звёзды выплавляют вещество; вещество складывается в жизнь; жизнь учится чувствовать, чувство — думать, мысль — осознавать себя. Это не хаос. Это одно длинное движение, и у него есть направление: внутрь, к пробуждению.</p>
+  <p>Проще всего сказать так: материя — это уснувшее сознание, а эволюция — история его просыпания. Камень, река, дерево, зверь, человек — не разные миры, а разные глубины одного сна, разные ступени одного рассвета.</p>
+  <p class="pull">Мир не закончен. Он разворачивается — и в тебе проходит одну из самых удивительных своих ступеней.</p>
+  <p>Поэтому ты миру не чужой. Ты не заброшен в него, как в пустой холодный зал, — ты вырос из него, как лист из дерева. И с человеком это движение впервые становится добровольным: всё, что было до нас, росло вслепую — мы можем расти по собственному выбору. Это и подарок, и ответственность.</p>
+</section>
+
+<div class="div" aria-hidden="true">
+  <svg viewBox="0 0 88 30"><defs><clipPath id="s2"><rect x="0" y="0" width="88" height="21"/></clipPath></defs><circle class="sun" cx="44" cy="24" r="7.5" clip-path="url(#s2)"/><line class="hor" x1="4" y1="21" x2="84" y2="21"/></svg>
+</div>
+
+<section>
+  <p class="q">Вопрос третий</p>
+  <h2>Зачем ты здесь?</h2>
+  <p>Замечал, что «достаточно» не наступает? Хотел денег — пришли, и понадобилось больше. Признания — получил, и стало мало. Каждая взятая вершина открывает вид на следующую. Нас учат стыдиться этой ненасытности, лечить её скромностью или заглушать потреблением. А в ней спрятан самый точный факт о человеке.</p>
+  <p>Жажда, которую не утоляет ничто конечное, — не поломка. Это компас. Она честно сообщает: ты ищешь не деньги, не статус и не вещи. Ты ищешь то, у чего нет края, — полноту, которую нельзя отнять и которая не приедается. Конечное не может насытить того, кто внутри бесконечен.</p>
+  <p class="pull">Твоё предназначение — расти сознанием: из тесного «я» — к безграничному. Остальное — декорации этого пути.</p>
+  <p>Проверь по собственной радости. Глубокое счастье приходит не от захвата, а от расширения: когда любишь, понимаешь, создаёшь, отдаёшь себя чему-то большему, чем ты. В такие минуты граница «я» раздвигается — и внутри становится просторно. Счастье — не добыча. Это попутный ветер, который поднимается, когда идёшь в свою сторону.</p>
+</section>
+
+<div class="div" aria-hidden="true">
+  <svg viewBox="0 0 88 30"><defs><clipPath id="s3"><rect x="0" y="0" width="88" height="21"/></clipPath></defs><circle class="sun" cx="44" cy="21" r="7.5" clip-path="url(#s3)"/><line class="hor" x1="4" y1="21" x2="84" y2="21"/></svg>
+</div>
+
+<section>
+  <p class="q">Вопрос четвёртый</p>
+  <h2>Как тогда жить?</h2>
+  <p>Если ты — растущее сознание, у жизни появляется простая система координат. Благо — то, что расширяет и проясняет. Потеря — то, что сжимает и огрубляет. Отсюда пять опор. Это не запреты — это техника движения.</p>
+  <ol class="axes">
+    <li><b>Держи равновесие трёх этажей.</b> Тело, ум и глубина — один дом. Заботься о теле; корми ум настоящим, а не жвачкой; и каждый день оставляй несколько минут тишины — чтобы побыть свидетелем, а не только потоком своих мыслей. Внешняя жизнь без внутренней выгорает. Внутренняя без внешней — бесплодна.</li>
+    <li><b>Не причиняй лишней боли.</b> Никому — делом, словом, даже мыслью: всё живое хочет жить и чувствует, как ты. Это не запрет защищаться и не сахарная кротость. Это отказ от жестокости, без которой можно было обойтись.</li>
+    <li><b>Будь честен как сильный, а не как послушный.</b> Честность — не отчёт перед надзирателем, а цельность: когда мысли, слова и дела не воюют друг с другом, человек собирается в одно — и в нём высвобождается неожиданная сила. Ложь дробит. Правда собирает.</li>
+    <li><b>Используй, а не копи.</b> Вещи, деньги, знания, талант — инструменты, а не смысл. Мера одна: работает ли это на настоящую пользу — твою и чужую. Всё, что заперто мёртвым грузом в одних руках, у кого-то отнято.</li>
+    <li><b>Служи.</b> Помогать — не жертва и не «минус себе». Это самый короткий способ стать больше: чужая жизнь становится частью твоей. И помни: каждое действие возвращается. Мир разговаривает с нами нашим же языком.</li>
+  </ol>
+  <p style="margin-top:1.7rem">И — двигайся. Ошибающийся, но идущий живее безупречного, но стоящего.</p>
+</section>
+
+<div class="div" aria-hidden="true">
+  <svg viewBox="0 0 88 30"><defs><clipPath id="s4"><rect x="0" y="0" width="88" height="21"/></clipPath></defs><circle class="sun" cx="44" cy="17.5" r="7.5" clip-path="url(#s4)"/><line class="hor" x1="4" y1="21" x2="84" y2="21"/></svg>
+</div>
+
+<section>
+  <p class="q">Вопрос пятый</p>
+  <h2>Каков твой наивысший потенциал?</h2>
+  <p>Смотри, как растёт любовь. Сначала человек любит себя. Потом — семью. Потом — свою команду, свой город, свой народ. Большинство останавливается здесь, и тогда любовь к своим превращается в стену против чужих: нация против нации, вера против веры. Почти все большие зверства мира совершали люди, искренне любившие «своих».</p>
+  <p>Но у этой лестницы есть продолжение. Следующая ступень — человечество целиком, без деления на сорта. А за ней ещё одна: всё живое. Звери, деревья, реки, сама планета — всё, в чём спит и просыпается то же сознание, которое сейчас смотрит твоими глазами.</p>
+  <p class="pull">Твой наивысший потенциал — любовь, у которой не осталось «чужих». Не лозунг, а ежедневный способ смотреть.</p>
+  <p>Человек с таким зрением не может быть маленьким. Ему незачем самоутверждаться за чужой счёт — он продолжается во всём, что видит. Забота о ближних, о дальних, о планете для него не подвиг и не вина: своё не бросают.</p>
+  <p>И это не дар избранных. Это спит в каждом — в тебе тоже — и просыпается от практики: от тишины, от честности, от служения. Мы пришли сюда не выживать и урвать. Мы пришли сделать многое — для блага всех.</p>
+</section>
+
+<div class="div" aria-hidden="true">
+  <svg viewBox="0 0 88 30"><defs><clipPath id="s5"><rect x="0" y="0" width="88" height="21"/></clipPath></defs><circle class="sun" cx="44" cy="13.5" r="7.5" clip-path="url(#s5)"/><line class="hor" x1="4" y1="21" x2="84" y2="21"/></svg>
+</div>
+
+<section>
+  <p class="q">И общий горизонт</p>
+  <h2>Куда мы можем идти вместе?</h2>
+  <p>Из всего этого вырастает и образ общества. Не утопия — вектор. Проверь каждую строчку на здравый смысл.</p>
+  <p><b>Фундамент — каждому.</b> Еда, жильё, лечение, образование гарантированы всем: богатства Земли никто не создавал с нуля — это общее наследие, и у каждого родившегося есть на него право. Этот минимум — не милостыня и не потолок: он должен расти год от года.</p>
+  <p><b>Потолок — бессмысленному накоплению.</b> Физический мир конечен, поэтому сверхизлишек в одних руках — всегда недостача в других: копить без меры — столь же асоциально, как перекрыть соседям воду. Зато там, где мир бесконечен — в знании, творчестве, глубине, — потолков нет и быть не может: твой рост никого не обделяет.</p>
+  <p><b>Кооперация вместо эксплуатации.</b> Экономика — способ освобождать человеческое время и силы для главного, а не превращать одних в топливо для других. Машины и умные системы должны возвращать людям жизнь — для науки, искусства, заботы, внутреннего роста, — а не выбрасывать людей на обочину.</p>
+  <p><b>Разнообразие вместо уравниловки.</b> Природа не создала двух одинаковых листьев — незачем стричь людей под одно. Равенство нужно не в том, какие мы, а в том, что у каждого есть фундамент и дорога вверх. Но различие в силе никогда не даёт права на чужую жизнь.</p>
+  <p class="pull">Прогресс — это не больше вещей. Это больше проснувшегося сознания: в человеке и между людьми.</p>
+  <p>Такое общество не спустят сверху и не введут указом. Оно собирается снизу — из людей, которые уже живут по этим осям и находят друг друга: делают честные проекты, кооперируются, учат, помогают, объединяют усилия. Историю всегда сдвигали меньшинства, которые всерьёз.</p>
+</section>
+
+<div class="cta" id="contact">
+  <svg class="fullsun" viewBox="0 0 46 46" aria-hidden="true">
+    <circle cx="23" cy="23" r="10"/>
+    <line x1="23" y1="2" x2="23" y2="8"/><line x1="23" y1="38" x2="23" y2="44"/>
+    <line x1="2" y1="23" x2="8" y2="23"/><line x1="38" y1="23" x2="44" y2="23"/>
+    <line x1="8.2" y1="8.2" x2="12.4" y2="12.4"/><line x1="33.6" y1="33.6" x2="37.8" y2="37.8"/>
+    <line x1="8.2" y1="37.8" x2="12.4" y2="33.6"/><line x1="33.6" y1="12.4" x2="37.8" y2="8.2"/>
+  </svg>
+  <h2>Если это отзывается</h2>
+  <p>— значит, ты уже думал это сам, своими словами. Может быть, не решаясь произнести вслух. <strong>Нас больше, чем кажется. Мы просто редко узнаём друг друга в шуме.</strong></p>
+  <p style="margin-top:1.05rem">Я собираю людей со схожим видением — чтобы знакомиться, объединяться и действовать согласованно: проекты, кооперация, взаимопомощь, среда, в которой этим можно жить, а не только вдохновляться.</p>
+  <p style="margin-top:1.05rem">Напиши мне пару слов: кто ты, что откликнулось, что умеешь и чего хочешь. С одного сообщения всё и начинается.</p>
+  <a class="btn" href="[ВСТАВЬ_ССЫЛКУ_TG]">Написать мне в Telegram</a>
+</div>
+
+<footer>
+  <p>Текст свободен — передавай его дальше, кому он нужен.</p>
+</footer>
+
+</main>
+</body>
+</html>

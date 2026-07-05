@@ -174,9 +174,9 @@
   <p class="k">Вопрос 1 из 5</p>
   <h2>Кто ты?</h2>
   <div class="opts">
-    <button class="opt" data-goto="a1a">Тело и мозг</button>
-    <button class="opt" data-goto="a1b">Имя, роли, моя история</button>
-    <button class="opt" data-goto="a1c">Что-то глубже этого</button>
+    <button class="opt" data-set="q1=a" data-goto="a1a">Тело и мозг</button>
+    <button class="opt" data-set="q1=b" data-goto="a1b">Имя, роли, моя история</button>
+    <button class="opt" data-set="q1=c" data-goto="a1c">Что-то глубже этого</button>
   </div>
 </section>
 
@@ -242,7 +242,6 @@
 </section>
 <section class="card" data-branch id="a2c" data-next="w2">
   <p>Тогда сейчас ты увидишь подтверждение.</p>
-  <p class="tease">Траектория →</p>
 </section>
 
 <section class="card" id="w2">
@@ -263,8 +262,8 @@
   <p class="k">Вопрос 3 из 5</p>
   <h2>Тебе когда-нибудь было по-настоящему достаточно — денег, признания, впечатлений?</h2>
   <div class="opts">
-    <button class="opt" data-goto="a3a">Да, бывает</button>
-    <button class="opt" data-goto="a3b">Нет. Всегда хочется ещё</button>
+    <button class="opt" data-set="q3=a" data-goto="a3a">Да, бывает</button>
+    <button class="opt" data-set="q3=b" data-goto="a3b">Нет. Всегда хочется ещё</button>
   </div>
 </section>
 
@@ -280,38 +279,57 @@
 <section class="card" id="w3">
   <p>Жажда, которую не утоляет ничто конечное, — не поломка. Это компас.</p>
   <p>Ты ищешь не деньги, не статус, не вещи. Ты ищешь то, у чего нет края. Конечное не может насытить того, кто внутри бесконечен.</p>
-  <p class="tease">Тогда что делать? →</p>
 </section>
 
 <section class="card">
   <p class="pull">Твоё предназначение — расти сознанием: из тесного «я» — к безграничному. Остальное — декорации пути.</p>
   <p>Проверь по радости: глубокая приходит не от захвата, а от расширения — когда любишь, понимаешь, создаёшь, отдаёшь.</p>
-  <p class="tease">Как жить с этим по понедельникам — пять опор. Быстро →</p>
+  <p class="tease">Вопрос четвёртый — как раз про понедельники →</p>
+</section>
+
+<!-- ВОПРОС 4 -->
+<section class="card" data-q>
+  <p class="k">Вопрос 4 из 5</p>
+  <h2>Как жить, если всё это правда?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a4a">Скажи правила</button>
+    <button class="opt" data-goto="a4b">У меня и так всё работает</button>
+    <button class="opt" data-goto="a4c">Покажи практику</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a4a" data-next="p1">
+  <p>Правил не будет. Правила держатся на страхе — и ломаются первыми.</p>
+  <p class="tease">Будут опоры — техника движения. Их пять →</p>
+</section>
+<section class="card" data-branch id="a4b" data-next="p1">
+  <p>Возможно. Тогда просто сверься — пять опор, коротких.</p>
+  <p class="tease">Вдруг одна из них давно твоя →</p>
+</section>
+<section class="card" data-branch id="a4c" data-next="p1">
+  <p>Держи. Пять опор, без воды.</p>
+  <p class="tease">Первая →</p>
 </section>
 
 <!-- ПЯТЬ ОПОР -->
-<section class="card">
+<section class="card" id="p1">
   <p class="num">01</p>
   <p><b>Равновесие.</b> Тело, ум, глубина — один дом. Каждый день — несколько минут медитации: побыть свидетелем, а не потоком мыслей.</p>
-  <p class="tease">02 →</p>
 </section>
 
 <section class="card">
   <p class="num">02</p>
   <p><b>Не причиняй лишней боли.</b> Ни делом, ни словом, ни мыслью. Защищаться можно. Жестокость без нужды — нет.</p>
-  <p class="tease">03 →</p>
 </section>
 
 <section class="card">
   <p class="num">03</p>
   <p><b>Честность сильного.</b> Когда мысли, слова и дела не воюют друг с другом, в человеке высвобождается сила. Ложь дробит. Правда собирает.</p>
-  <p class="tease">04 →</p>
 </section>
 
 <section class="card">
   <p class="num">04</p>
   <p><b>Используй, а не копи.</b> Вещи, деньги, знания — инструменты. Всё, что заперто мёртвым грузом в одних руках, у кого-то отнято.</p>
-  <p class="tease">05 →</p>
 </section>
 
 <section class="card">
@@ -369,7 +387,6 @@
 
 <section class="card" data-branch id="ba" data-next="wo">
   <p>Приму его наполовину. И эта половина важная.</p>
-  <p class="tease">Смотри, какая →</p>
 </section>
 <section class="card" data-branch id="bb" data-next="wo">
   <p>Про утопию отвечу, обещаю. Через два экрана.</p>
@@ -402,7 +419,30 @@
   <p class="tease">Это только фасад →</p>
 </section>
 
-<section class="card">
+<section class="card" data-q>
+  <p class="k">Проверка</p>
+  <h2>Если бы завтра не нужно было зарабатывать — что бы ты делал через год?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="ua">Отдыхал бы. Долго</button>
+    <button class="opt" data-goto="ub">Занялся бы делом, которое люблю</button>
+    <button class="opt" data-goto="uc">Не знаю. Страшный вопрос</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="ua" data-next="m2">
+  <p>Первые месяцы — точно. А потом скука окажется сильнее усталости: человек не умеет долго ничего не растить.</p>
+  <p class="tease">Смотри, как там устроена работа →</p>
+</section>
+<section class="card" data-branch id="ub" data-next="m2">
+  <p>Вот. Это желание — уже готовый житель того утра.</p>
+  <p class="tease">Смотри, как оно там устроено →</p>
+</section>
+<section class="card" data-branch id="uc" data-next="m2">
+  <p>Самый честный ответ. Нас никогда всерьёз не спрашивали.</p>
+  <p class="tease">Там — спрашивают с детства →</p>
+</section>
+
+<section class="card" id="m2">
   <p>Работа не исчезла — исчезло рабство в ней. Машинное делают машины. Людям осталось человеческое.</p>
   <p>Обычное дело устроено как кооператив: им владеют те, кто его делает. Успех — не то, сколько ты запер в хранилищах, а то, что ты оставил живым и растущим.</p>
   <p class="tease">Дальше — города и одна дерзость →</p>
@@ -411,7 +451,7 @@
 <section class="card">
   <p>Города стоят в зелени. Рекам не нужен праздник, чтобы быть чистыми. На Марсе доращивают первые сады — продолжение ухоженной Земли, а не бегство с испорченной.</p>
   <p>Люди не стали одинаковыми: спорят, соревнуются, влюбляются, ошибаются. Драма осталась — ушла грязь под ней.</p>
-  <p class="tease">Скажешь — фантастика? →</p>
+  <p class="tease">Сейчас отвечу тем, кто уже усмехнулся →</p>
 </section>
 
 <section class="card">
@@ -443,7 +483,8 @@
     <line x1="8.2" y1="37.8" x2="12.4" y2="33.6"/><line x1="33.6" y1="12.4" x2="37.8" y2="8.2"/>
   </svg>
   <h2>Если это отзывается</h2>
-  <p class="dim" id="echo"></p>
+  <p class="tease" id="echo" style="margin-top:0"></p>
+  <p class="dim" id="echo2"></p>
   <p class="dim">Ты дочитал не случайно. Нас больше, чем кажется, — мы просто редко узнаём друг друга в шуме.</p>
   <p class="dim" style="margin-top:.9rem">Напиши мне пару слов: кто ты, что откликнулось, чего хочешь. С одного сообщения всё и начинается.</p>
   <div>
@@ -467,6 +508,7 @@
   var sun = document.getElementById('skysun');
   var hint = document.getElementById('taphint');
   var echo = document.getElementById('echo');
+  var echo2 = document.getElementById('echo2');
   var trail = [];
   var ans = {};
   try { ans = JSON.parse(localStorage.getItem('mslide-ans') || '{}'); } catch(e) { ans = {}; }
@@ -477,6 +519,9 @@
     c: 'Ты сказал: человечество. Значит, эта карта тебе уже знакома.',
     d: 'Ты сказал: всё живое. Тогда эта дверь — уже твоя.'
   };
+  var P1 = { a:'«я — тело»', b:'«я — роли»', c:'«я — глубже»' };
+  var P3 = { a:'«мне бывает достаточно»', b:'«всегда хочется ещё»' };
+  var P5 = { a:'«свои — семья»', b:'«свои — народ»', c:'«свои — человечество»', d:'«свои — всё живое»' };
 
   function isChoice(c){ return c.hasAttribute('data-q'); }
   function isBranch(c){ return c.hasAttribute('data-branch'); }
@@ -490,7 +535,14 @@
       setTimeout(function(){ cur.classList.remove('bye'); }, 360);
     }
     idx = i;
-    if (nxt.id === 'fin' && echo) echo.textContent = ECHO[ans.q5] || '';
+    if (nxt.id === 'fin') {
+      var parts = [];
+      if (P1[ans.q1]) parts.push(P1[ans.q1]);
+      if (P3[ans.q3]) parts.push(P3[ans.q3]);
+      if (P5[ans.q5]) parts.push(P5[ans.q5]);
+      if (echo) echo.textContent = parts.length ? 'Твой путь: ' + parts.join(' → ') + '.' : '';
+      if (echo2) echo2.textContent = ECHO[ans.q5] || '';
+    }
     nxt.classList.add('on');
     nxt.scrollTop = 0;
     var lin = cards.filter(function(c){ return !isBranch(c); });

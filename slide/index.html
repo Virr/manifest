@@ -118,6 +118,12 @@
     0%,100% { transform:translateX(-50%) translateY(0); }
     50%     { transform:translateX(-50%) translateY(-6px); }
   }
+  .tap.quiet {
+    animation:none; transform:translateX(-50%);
+    background:var(--card); color:var(--soft);
+    border:1px solid var(--line); box-shadow:none; font-weight:600;
+  }
+  .tap.quiet:hover { background:var(--card); color:var(--accent); border-color:var(--accent); }
   .tap.off { display:none; }
 
   .btn {
@@ -562,6 +568,7 @@
     counter.textContent = (pos + 1) + ' / ' + lin.length;
     back.disabled = trail.length === 0;
     hint.classList.toggle('off', isChoice(nxt) || i === N - 1);
+    hint.classList.toggle('quiet', i > 0);
     try { localStorage.setItem('mslide-pos', String(idx)); } catch(e) {}
   }
 

@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Нам есть вокруг чего объединиться — версия «горка»</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Семь минут. Пять вопросов. В конце — дверь.">
+<meta property="og:title" content="Нам есть вокруг чего объединиться">
+<meta property="og:description" content="Семь минут. Пять вопросов. В конце — дверь.">
+<meta property="og:image" content="https://virr.github.io/manifest/og.png">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ef">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a171b">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23d97b41"/></svg>'>
+<style>
+  :root {
+    --paper:#faf6ef; --ink:#29241d; --soft:#6f6455;
+    --accent:#b04f26; --accent-soft:#c96a3a; --line:#e6ddcd; --card:#f3ecdf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#1a171b; --ink:#eae3d7; --soft:#a79c8d;
+      --accent:#e2a557; --accent-soft:#cf9147; --line:#332d34; --card:#221e25;
+    }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    background:var(--paper); color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:1.17rem; line-height:1.66;
+    overflow:hidden; -webkit-font-smoothing:antialiased;
+  }
+  ::selection { background:var(--accent); color:var(--paper); }
+
+  #sky {
+    position:fixed; top:0; left:0; right:0; height:64px;
+    display:flex; justify-content:center; z-index:5; pointer-events:none;
+  }
+  #sky svg { width:150px; height:64px; }
+  #sky .hor { stroke:var(--line); stroke-width:2; stroke-linecap:round; }
+  #sky .sun { fill:var(--accent); transition:cy .5s ease; }
+  #counter {
+    position:fixed; top:14px; right:16px; z-index:6;
+    font-family:system-ui,sans-serif; font-size:.72rem; letter-spacing:.08em;
+    color:var(--soft);
+  }
+  #back {
+    position:fixed; top:8px; left:10px; z-index:6;
+    background:none; border:none; color:var(--soft);
+    font-size:1.25rem; padding:.4rem .7rem; cursor:pointer; border-radius:10px;
+    font-family:system-ui,sans-serif; opacity:.85;
+  }
+  #back:hover { color:var(--accent); }
+  #back[disabled] { opacity:0; pointer-events:none; }
+
+  #deck { position:fixed; inset:0; }
+  .card {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:5.2rem 1.6rem calc(5.8rem + env(safe-area-inset-bottom));
+    max-width:36rem; margin:0 auto;
+    opacity:0; transform:translateY(26px); pointer-events:none;
+    transition:opacity .34s ease, transform .34s ease;
+    overflow-y:auto;
+  }
+  .card.on { opacity:1; transform:none; pointer-events:auto; }
+  .card.bye { opacity:0; transform:translateY(-22px); pointer-events:none; }
+
+  .k {
+    font-family:system-ui,sans-serif; font-size:.7rem; font-weight:600;
+    letter-spacing:.24em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:1rem;
+  }
+  h1 { font-size:clamp(1.9rem,7.2vw,2.9rem); line-height:1.14; font-weight:400; margin-bottom:1.2rem; text-wrap:balance; }
+  h2 { font-size:clamp(1.45rem,5.4vw,2rem); line-height:1.2; font-weight:400; margin-bottom:1.1rem; text-wrap:balance; }
+  p + p { margin-top:1rem; }
+  .pull {
+    padding-left:1.05rem; border-left:2px solid var(--accent);
+    font-size:1.32rem; line-height:1.5; margin:1.2rem 0;
+  }
+  .dim { color:var(--soft); }
+  .num {
+    font-family:system-ui,sans-serif; font-size:.8rem; font-weight:700;
+    color:var(--accent); letter-spacing:.06em; margin-bottom:.6rem;
+  }
+  b { font-weight:700; }
+
+  .tease {
+    margin-top:1.5rem;
+    font-family:system-ui,sans-serif; font-size:.88rem; font-weight:600;
+    color:var(--accent); letter-spacing:.02em;
+  }
+
+  .opts { margin-top:1.6rem; display:flex; flex-direction:column; gap:.7rem; }
+  .opt {
+    text-align:left; background:var(--card); color:var(--ink);
+    border:1px solid var(--line); border-radius:14px;
+    padding:.95rem 1.15rem; font:inherit; font-size:1.05rem; line-height:1.45;
+    cursor:pointer; transition:border-color .15s, transform .15s;
+  }
+  .opt:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .opt:active { transform:scale(.99); }
+
+  .tap {
+    position:fixed; left:50%;
+    bottom:calc(18px + env(safe-area-inset-bottom));
+    z-index:5; border:none; cursor:pointer;
+    padding:.75rem 1.7rem; border-radius:999px;
+    background:var(--accent); color:var(--paper);
+    font-family:system-ui,sans-serif; font-size:.86rem; font-weight:650;
+    letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
+    box-shadow:0 4px 20px color-mix(in srgb, var(--accent) 45%, transparent);
+    animation:bob 2s ease-in-out infinite;
+  }
+  .tap:hover { background:var(--accent-soft); }
+  @keyframes bob {
+    0%,100% { transform:translateX(-50%) translateY(0); }
+    50%     { transform:translateX(-50%) translateY(-6px); }
+  }
+  .tap.off { display:none; }
+
+  .btn {
+    display:inline-block; margin-top:1.4rem; padding:.9rem 2rem;
+    background:var(--accent); color:var(--paper);
+    font-family:system-ui,sans-serif; font-size:1rem; font-weight:650;
+    text-decoration:none; border-radius:999px; border:none; cursor:pointer;
+  }
+  .btn:hover { background:var(--accent-soft); }
+  .ghost {
+    display:inline-block; margin-top:1rem; color:var(--soft);
+    font-family:system-ui,sans-serif; font-size:.86rem; text-decoration:underline;
+    text-underline-offset:3px; cursor:pointer; background:none; border:none;
+  }
+  .ghost:hover { color:var(--accent); }
+  .sunfull { width:44px; height:44px; margin-bottom:1rem; }
+  .sunfull circle { fill:var(--accent); }
+  .sunfull line { stroke:var(--accent); stroke-width:2.4; stroke-linecap:round; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition:opacity .2s ease; transform:none !important; }
+    .tap { animation:none; transform:translateX(-50%); }
+    #sky .sun { transition:none; }
+  }
+  @media (max-width:480px) { body { font-size:1.07rem; } .pull { font-size:1.18rem; } }
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true">
+  <svg viewBox="0 0 150 64">
+    <defs><clipPath id="skyclip"><rect x="0" y="0" width="150" height="44"/></clipPath></defs>
+    <circle class="sun" id="skysun" cx="75" cy="58" r="11" clip-path="url(#skyclip)"/>
+    <line class="hor" x1="34" y1="44" x2="116" y2="44"/>
+  </svg>
+</div>
+<button id="back" aria-label="Назад">←</button>
+<div id="counter"></div>
+<button class="tap" id="taphint">Нажми — дальше</button>
+
+<main id="deck">
+
+<!-- СТАРТ -->
+<section class="card">
+  <p class="k">Манифест</p>
+  <h1>Нам есть вокруг чего объединиться</h1>
+  <p>Семь минут. Пять вопросов. В конце — дверь.</p>
+  <p class="tease">Первый вопрос — самый простой. И самый трудный →</p>
+  <button class="ghost" id="resume" style="display:none"></button>
+</section>
+
+<!-- ВОПРОС 1 -->
+<section class="card" data-q>
+  <p class="k">Вопрос 1 из 5</p>
+  <h2>Кто ты?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a1a">Тело и мозг</button>
+    <button class="opt" data-goto="a1b">Имя, роли, моя история</button>
+    <button class="opt" data-goto="a1c">Что-то глубже этого</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a1a" data-next="w1">
+  <p>Честный ответ.</p>
+  <p>Но большая часть клеток твоего тела за годы заменилась. А ты — всё ещё ты.</p>
+  <p class="tease">Кто оставался на месте? →</p>
+</section>
+<section class="card" data-branch id="a1b" data-next="w1">
+  <p>Имя тебе дали. Роли меняются. История дописывается каждый день.</p>
+  <p class="tease">А тот, с кем всё это происходит, — кто он? →</p>
+</section>
+<section class="card" data-branch id="a1c" data-next="w1">
+  <p>Значит, мы уже смотрим в одну сторону.</p>
+  <p class="tease">Назовём это «глубже» словами →</p>
+</section>
+
+<section class="card" id="w1">
+  <p>Мысли приходят и уходят. А есть тот, кто их замечает.</p>
+  <p>Чувства вспыхивают и гаснут. А есть тот, кто присутствует.</p>
+  <p>Этот тихий свидетель и есть ты. Не персонаж фильма — тот, в ком идёт фильм.</p>
+  <p class="tease">И вот факт, который всё меняет →</p>
+</section>
+
+<section class="card">
+  <p class="pull">Ты — То, в котором вселенная открыла глаза и смотрит на саму себя.</p>
+  <p>Свидетель во мне — той же природы, что и в тебе. На поверхности нас миллиарды. На глубине нас — одно.</p>
+  <p class="tease">Теперь объясню, зачем я вообще это пишу →</p>
+</section>
+
+<!-- ПРИЗНАНИЕ -->
+<section class="card">
+  <p>Честно? Мне страшно это публиковать.</p>
+  <p>Мрачный прогноз можно произнести с умным лицом — «реализм». Пессимист не рискует ничем. Тот, кто всерьёз говорит о лучшем, рискует каждым словом.</p>
+  <p class="tease">Но есть вещь страшнее →</p>
+</section>
+
+<section class="card">
+  <p>Страшнее — молчать.</p>
+  <p>Всё, чего мы боимся, уже расписано до мелочей: киберпанк с неоном по свалкам, корпорации вместо стран, выжженная планета. А будущее, которое хотим, — белое пятно.</p>
+  <p class="pull">Цивилизация без мечты дрейфует в сторону самой подробной из своих карт.</p>
+  <p class="tease">Это белое пятно мы сейчас заполним. Вопрос второй →</p>
+</section>
+
+<!-- ВОПРОС 2 -->
+<section class="card" data-q>
+  <p class="k">Вопрос 2 из 5</p>
+  <h2>Что такое этот мир?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a2a">Случайность. Смысла нет</button>
+    <button class="opt" data-goto="a2b">Иллюзия, ловушка</button>
+    <button class="opt" data-goto="a2c">Что-то живое и осмысленное</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a2a" data-next="w2">
+  <p>Так нас учили.</p>
+  <p class="tease">Но у случайности не бывает такой упрямой траектории. Смотри →</p>
+</section>
+<section class="card" data-branch id="a2b" data-next="w2">
+  <p>Понимаю усталость, из которой так отвечают.</p>
+  <p class="tease">И всё же — посмотри на траекторию →</p>
+</section>
+<section class="card" data-branch id="a2c" data-next="w2">
+  <p>Тогда сейчас ты увидишь подтверждение.</p>
+  <p class="tease">Траектория →</p>
+</section>
+
+<section class="card" id="w2">
+  <p>Пыль собирается в звёзды. Звёзды выплавляют вещество. Вещество складывается в жизнь.</p>
+  <p>Жизнь учится чувствовать. Чувство — думать. Мысль — осознавать себя.</p>
+  <p>Это не хаос. Это одно длинное движение — внутрь, к пробуждению.</p>
+  <p class="tease">Из этого следует кое-что лично про тебя →</p>
+</section>
+
+<section class="card">
+  <p>Материя — уснувшее сознание. Эволюция — история его просыпания. Камень, река, зверь, человек — ступени одного рассвета.</p>
+  <p class="pull">Ты не заброшен в мир, как в пустой холодный зал. Ты вырос из него, как лист из дерева.</p>
+  <p class="tease">Теперь — вопрос про твою жажду. Отвечай честно →</p>
+</section>
+
+<!-- ВОПРОС 3 -->
+<section class="card" data-q>
+  <p class="k">Вопрос 3 из 5</p>
+  <h2>Тебе когда-нибудь было по-настоящему достаточно — денег, признания, впечатлений?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="a3a">Да, бывает</button>
+    <button class="opt" data-goto="a3b">Нет. Всегда хочется ещё</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a3a" data-next="w3">
+  <p>Редкий дар — или высота, ещё не взятая. У большинства «достаточно» не наступает никогда.</p>
+  <p class="tease">И в этом спрятан самый точный факт о человеке →</p>
+</section>
+<section class="card" data-branch id="a3b" data-next="w3">
+  <p>У всех так. Нас учат этого стыдиться.</p>
+  <p class="tease">Зря. В этой ненасытности — самый точный факт о тебе →</p>
+</section>
+
+<section class="card" id="w3">
+  <p>Жажда, которую не утоляет ничто конечное, — не поломка. Это компас.</p>
+  <p>Ты ищешь не деньги, не статус, не вещи. Ты ищешь то, у чего нет края. Конечное не может насытить того, кто внутри бесконечен.</p>
+  <p class="tease">Тогда что делать? →</p>
+</section>
+
+<section class="card">
+  <p class="pull">Твоё предназначение — расти сознанием: из тесного «я» — к безграничному. Остальное — декорации пути.</p>
+  <p>Проверь по радости: глубокая приходит не от захвата, а от расширения — когда любишь, понимаешь, создаёшь, отдаёшь.</p>
+  <p class="tease">Как жить с этим по понедельникам — пять опор. Быстро →</p>
+</section>
+
+<!-- ПЯТЬ ОПОР -->
+<section class="card">
+  <p class="num">01</p>
+  <p><b>Равновесие.</b> Тело, ум, глубина — один дом. Каждый день — несколько минут медитации: побыть свидетелем, а не потоком мыслей.</p>
+  <p class="tease">02 →</p>
+</section>
+
+<section class="card">
+  <p class="num">02</p>
+  <p><b>Не причиняй лишней боли.</b> Ни делом, ни словом, ни мыслью. Защищаться можно. Жестокость без нужды — нет.</p>
+  <p class="tease">03 →</p>
+</section>
+
+<section class="card">
+  <p class="num">03</p>
+  <p><b>Честность сильного.</b> Когда мысли, слова и дела не воюют друг с другом, в человеке высвобождается сила. Ложь дробит. Правда собирает.</p>
+  <p class="tease">04 →</p>
+</section>
+
+<section class="card">
+  <p class="num">04</p>
+  <p><b>Используй, а не копи.</b> Вещи, деньги, знания — инструменты. Всё, что заперто мёртвым грузом в одних руках, у кого-то отнято.</p>
+  <p class="tease">05 →</p>
+</section>
+
+<section class="card">
+  <p class="num">05</p>
+  <p><b>Служи.</b> Чужая жизнь становится частью твоей. Каждое действие возвращается.</p>
+  <p>И — двигайся. Ошибающийся, но идущий, — живее безупречного, но стоящего.</p>
+  <p class="tease">Остался самый высокий вопрос →</p>
+</section>
+
+<!-- ВОПРОС 5 -->
+<section class="card" data-q>
+  <p class="k">Вопрос 5 из 5</p>
+  <h2>Где сейчас проходит граница твоих «своих»?</h2>
+  <div class="opts">
+    <button class="opt" data-set="q5=a" data-goto="a5a">Семья и близкие</button>
+    <button class="opt" data-set="q5=b" data-goto="a5b">Мой народ, моя страна</button>
+    <button class="opt" data-set="q5=c" data-goto="a5c">Человечество</button>
+    <button class="opt" data-set="q5=d" data-goto="a5d">Всё живое</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="a5a" data-next="w5">
+  <p>Честно. Отсюда начинают все — и это уже любовь.</p>
+  <p class="tease">У неё есть продолжение →</p>
+</section>
+<section class="card" data-branch id="a5b" data-next="w5">
+  <p>Сильное чувство. Но у него есть тень: любовь к своим легко становится стеной против чужих. Почти все большие зверства творили люди, искренне любившие «своих».</p>
+  <p class="tease">К счастью, у лестницы есть следующая ступень →</p>
+</section>
+<section class="card" data-branch id="a5c" data-next="w5">
+  <p>Большой круг.</p>
+  <p class="tease">Есть ещё шире →</p>
+</section>
+<section class="card" data-branch id="a5d" data-next="w5">
+  <p>Тогда ты уже знаешь, куда ведёт эта лестница.</p>
+  <p class="tease">Проговорим её до конца →</p>
+</section>
+
+<section class="card" id="w5">
+  <p>Лестница любви растёт: я → семья → народ → человечество → всё живое.</p>
+  <p class="pull">Твой наивысший потенциал — любовь, у которой не осталось «чужих». Не лозунг — ежедневный способ смотреть и действовать.</p>
+  <p class="tease">А теперь скажи это возражение вслух. Я знаю, оно у тебя есть →</p>
+</section>
+
+<!-- ВОЗРАЖЕНИЕ -->
+<section class="card" data-q>
+  <p class="k">Стоп</p>
+  <h2>Ты ведь уже хочешь возразить?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="ba">«Человек жаден. Работает только капитализм»</button>
+    <button class="opt" data-goto="bb">«Красиво, но это утопия»</button>
+    <button class="opt" data-goto="bc">Пока просто слушаю</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="ba" data-next="wo">
+  <p>Приму его наполовину. И эта половина важная.</p>
+  <p class="tease">Смотри, какая →</p>
+</section>
+<section class="card" data-branch id="bb" data-next="wo">
+  <p>Про утопию отвечу, обещаю. Через два экрана.</p>
+  <p class="tease">Сначала про жадность — они связаны →</p>
+</section>
+<section class="card" data-branch id="bc" data-next="wo">
+  <p>Тогда я сам подниму самое частое: «человек жаден, работает только капитализм».</p>
+  <p class="tease">И соглашусь. Наполовину →</p>
+</section>
+
+<section class="card" id="wo">
+  <p>Да, капитализм естественен. Он построен на реальном этаже человеческой природы: иметь, сравнивать, обгонять. Потому и пережил системы, отменявшие природу декретом.</p>
+  <p>И да: жадность, страх, зависть есть в каждом. В авторе этого текста — тоже.</p>
+  <p class="tease">Но у эволюции есть привычка →</p>
+</section>
+
+<section class="card">
+  <p>Она не сжигает прежнюю ступень. Она берёт из неё лучшее и строит следующую.</p>
+  <p>Когда-то естественным было «прав тот, кто сильнее». Мы переросли это, не отменив силу. Из капитализма возьмём золото — энергию, инициативу, размах. И оставим грязь.</p>
+  <p class="pull">Под жадностью есть этажи глубже. Лестница к ним — духовная практика: медитация, честность, служение. Не подвиг — гигиена.</p>
+  <p class="tease">Теперь обещанное: будущее, прорисованное подробнее киберпанка →</p>
+</section>
+
+<!-- УТРО -->
+<section class="card">
+  <p class="k">Образ будущего</p>
+  <h2>Каким может быть утро</h2>
+  <p>Лет через пятьдесят. Ты просыпаешься без фонового страха. Еда, одежда, жильё, лечение, знание есть у каждого — как воздух.</p>
+  <p>Слово «выживать» осталось в исторических романах. Рядом со словом «крепостной».</p>
+  <p class="tease">Это только фасад →</p>
+</section>
+
+<section class="card">
+  <p>Работа не исчезла — исчезло рабство в ней. Машинное делают машины. Людям осталось человеческое.</p>
+  <p>Обычное дело устроено как кооператив: им владеют те, кто его делает. Успех — не то, сколько ты запер в хранилищах, а то, что ты оставил живым и растущим.</p>
+  <p class="tease">Дальше — города и одна дерзость →</p>
+</section>
+
+<section class="card">
+  <p>Города стоят в зелени. Рекам не нужен праздник, чтобы быть чистыми. На Марсе доращивают первые сады — продолжение ухоженной Земли, а не бегство с испорченной.</p>
+  <p>Люди не стали одинаковыми: спорят, соревнуются, влюбляются, ошибаются. Драма осталась — ушла грязь под ней.</p>
+  <p class="tease">Скажешь — фантастика? →</p>
+</section>
+
+<section class="card">
+  <p class="pull">Посмотри на свой сегодняшний день из окна крепостной избы. Ты уже живёшь в фантастике вдвойне.</p>
+  <p>Вопрос лишь в том, в какую сторону мы рисуем подробные карты.</p>
+  <p class="tease">Последний поворот: чем это отличается от утопий →</p>
+</section>
+
+<!-- НЕ УТОПИЯ -->
+<section class="card">
+  <p>Утопии начинались с чертежа идеального общества. И упирались в вопрос: куда девать неподходящих? Ответ всегда оказывался лагерем.</p>
+  <p>Здесь наоборот. Не общество перекраивает человека — человек дорастает и пересобирает общество. Снизу. Добровольно.</p>
+  <p class="tease">«А что будет с несогласными?» →</p>
+</section>
+
+<section class="card">
+  <p>Ничего. Живи как живёшь. Граница проходит не по взглядам, а по вреду — как дорожная разметка, а не тирания.</p>
+  <p class="pull">Утопия — место, которого нет. А дорога, по которой уже идут, — есть.</p>
+  <p class="tease">Дверь, которую я обещал в начале, — за этим экраном →</p>
+</section>
+
+<!-- ФИНАЛ -->
+<section class="card" id="fin">
+  <svg class="sunfull" viewBox="0 0 46 46" aria-hidden="true">
+    <circle cx="23" cy="23" r="10"/>
+    <line x1="23" y1="2" x2="23" y2="8"/><line x1="23" y1="38" x2="23" y2="44"/>
+    <line x1="2" y1="23" x2="8" y2="23"/><line x1="38" y1="23" x2="44" y2="23"/>
+    <line x1="8.2" y1="8.2" x2="12.4" y2="12.4"/><line x1="33.6" y1="33.6" x2="37.8" y2="37.8"/>
+    <line x1="8.2" y1="37.8" x2="12.4" y2="33.6"/><line x1="33.6" y1="12.4" x2="37.8" y2="8.2"/>
+  </svg>
+  <h2>Если это отзывается</h2>
+  <p class="dim" id="echo"></p>
+  <p class="dim">Ты дочитал не случайно. Нас больше, чем кажется, — мы просто редко узнаём друг друга в шуме.</p>
+  <p class="dim" style="margin-top:.9rem">Напиши мне пару слов: кто ты, что откликнулось, чего хочешь. С одного сообщения всё и начинается.</p>
+  <div>
+    <a class="btn" href="https://t.me/Vishvashanti">Написать мне в Telegram</a>
+  </div>
+  <div>
+    <a class="ghost" href="../">Обычная версия текста</a>
+    <button class="ghost" id="restart">Пройти заново</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var N = cards.length;
+  var idx = 0, busy = false;
+  var back = document.getElementById('back');
+  var counter = document.getElementById('counter');
+  var sun = document.getElementById('skysun');
+  var hint = document.getElementById('taphint');
+  var echo = document.getElementById('echo');
+  var trail = [];
+  var ans = {};
+  try { ans = JSON.parse(localStorage.getItem('mslide-ans') || '{}'); } catch(e) { ans = {}; }
+
+  var ECHO = {
+    a: 'Ты сказал: мои «свои» — семья и близкие. Всё большое начинается ровно с этого круга.',
+    b: 'Ты сказал: мой народ. Ты умеешь любить больших. Дальше круг только растёт.',
+    c: 'Ты сказал: человечество. Значит, эта карта тебе уже знакома.',
+    d: 'Ты сказал: всё живое. Тогда эта дверь — уже твоя.'
+  };
+
+  function isChoice(c){ return c.hasAttribute('data-q'); }
+  function isBranch(c){ return c.hasAttribute('data-branch'); }
+
+  function show(i, push){
+    if (i < 0 || i >= N) return;
+    var cur = cards[idx], nxt = cards[i];
+    if (cur !== nxt) {
+      if (push !== false) trail.push(idx);
+      cur.classList.remove('on'); cur.classList.add('bye');
+      setTimeout(function(){ cur.classList.remove('bye'); }, 360);
+    }
+    idx = i;
+    if (nxt.id === 'fin' && echo) echo.textContent = ECHO[ans.q5] || '';
+    nxt.classList.add('on');
+    nxt.scrollTop = 0;
+    var lin = cards.filter(function(c){ return !isBranch(c); });
+    var pos = lin.indexOf(nxt); if (pos < 0) pos = lin.indexOf(cards[trail[trail.length-1]]);
+    var frac = Math.max(0, pos) / (lin.length - 1);
+    sun.setAttribute('cy', 58 - frac * 26);
+    counter.textContent = (pos + 1) + ' / ' + lin.length;
+    back.disabled = trail.length === 0;
+    hint.classList.toggle('off', isChoice(nxt) || i === N - 1);
+    try { localStorage.setItem('mslide-pos', String(idx)); } catch(e) {}
+  }
+
+  function nextLinear(){
+    if (isChoice(cards[idx])) return;
+    var explicit = cards[idx].getAttribute('data-next');
+    if (explicit) { var t = document.getElementById(explicit); if (t) return show(cards.indexOf(t)); }
+    var j = idx + 1;
+    while (j < N && isBranch(cards[j])) j++;
+    if (j < N) show(j);
+  }
+
+  function goBack(){
+    if (!trail.length) return;
+    show(trail.pop(), false);
+  }
+
+  document.querySelectorAll('.opt').forEach(function(btn){
+    btn.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var set = btn.getAttribute('data-set');
+      if (set) {
+        var kv = set.split('=');
+        ans[kv[0]] = kv[1];
+        try { localStorage.setItem('mslide-ans', JSON.stringify(ans)); } catch(e) {}
+      }
+      var t = document.getElementById(btn.getAttribute('data-goto'));
+      if (t) show(cards.indexOf(t));
+    });
+  });
+
+  document.getElementById('deck').addEventListener('click', function(ev){
+    if (ev.target.closest('a, button')) return;
+    nextLinear();
+  });
+
+  back.addEventListener('click', function(ev){ ev.stopPropagation(); goBack(); });
+  hint.addEventListener('click', function(ev){ ev.stopPropagation(); nextLinear(); });
+
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === ' ' || ev.key === 'ArrowRight' || ev.key === 'Enter') { ev.preventDefault(); nextLinear(); }
+    if (ev.key === 'ArrowLeft' || ev.key === 'Backspace') { ev.preventDefault(); goBack(); }
+  });
+
+  var tx = 0, ty = 0;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (e.target.closest('a, button')) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+    if (dy < -46 || dx < -46) nextLinear();
+    else if (dy > 46 || dx > 46) goBack();
+  }, {passive:true});
+
+  var restart = document.getElementById('restart');
+  if (restart) restart.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    try { localStorage.removeItem('mslide-pos'); localStorage.removeItem('mslide-ans'); } catch(e) {}
+    trail = []; ans = {};
+    show(0, false);
+  });
+  var resume = document.getElementById('resume');
+  var saved = 0;
+  try { saved = parseInt(localStorage.getItem('mslide-pos') || '0', 10) || 0; } catch(e) {}
+  if (saved > 2 && saved < N - 1 && resume) {
+    resume.style.display = 'inline-block';
+    resume.textContent = 'Продолжить, где остановился →';
+    resume.addEventListener('click', function(ev){ ev.stopPropagation(); show(saved); });
+  }
+
+  cards[0].classList.add('on');
+  show(0, false);
+})();
+</script>
+</body>
+</html>

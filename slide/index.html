@@ -498,6 +498,7 @@
 
 </main>
 
+<script data-goatcounter="https://vishvashanti.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
 (function(){
   var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
@@ -512,6 +513,14 @@
   var trail = [];
   var ans = {};
   try { ans = JSON.parse(localStorage.getItem('mslide-ans') || '{}'); } catch(e) { ans = {}; }
+
+  var maxPos = -1, gcq = [];
+  function gc(v){ if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(v); else gcq.push(v); }
+  window.addEventListener('load', function(){ setTimeout(function(){ gcq.splice(0).forEach(gc); }, 400); });
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  document.addEventListener('click', function(e){
+    if (e.target.closest('a.btn')) gc({ path: 'slide-door', title: 'клик в Telegram', event: true });
+  });
 
   var ECHO = {
     a: 'Ты сказал: мои «свои» — семья и близкие. Всё большое начинается ровно с этого круга.',
@@ -547,6 +556,7 @@
     nxt.scrollTop = 0;
     var lin = cards.filter(function(c){ return !isBranch(c); });
     var pos = lin.indexOf(nxt); if (pos < 0) pos = lin.indexOf(cards[trail[trail.length-1]]);
+    if (pos > maxPos) { maxPos = pos; gc({ path: '/slide/step/' + pad(pos + 1), title: 'шаг ' + (pos + 1) }); }
     var frac = Math.max(0, pos) / (lin.length - 1);
     sun.setAttribute('cy', 58 - frac * 26);
     counter.textContent = (pos + 1) + ' / ' + lin.length;
@@ -572,6 +582,7 @@
   document.querySelectorAll('.opt').forEach(function(btn){
     btn.addEventListener('click', function(ev){
       ev.stopPropagation();
+      gc({ path: 'slide-' + btn.getAttribute('data-goto'), title: 'выбор', event: true });
       var set = btn.getAttribute('data-set');
       if (set) {
         var kv = set.split('=');

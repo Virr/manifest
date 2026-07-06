@@ -177,11 +177,30 @@
 
 <section class="card">
   <p>Объединяются не вокруг лозунгов и не против кого-то. Объединение начинается с общего понимания, что есть благо и что есть прогресс, — по-простому: что такое хорошо и что такое плохо.</p>
-  <p class="tease">А у блага есть мерило →</p>
+  <p class="tease">Проверь на себе →</p>
 </section>
 
-<section class="card">
-  <p>Ты стоишь на остановке. Подходит автобус — это хорошо или плохо? Смотря куда ты едешь: не твой номер — досада, твой — удача.</p>
+<section class="card" data-q>
+  <p class="k">Разминка</p>
+  <h2>Ты стоишь на остановке. Подходит автобус — это хорошо или плохо?</h2>
+  <div class="opts">
+    <button class="opt" data-goto="busa">Хорошо</button>
+    <button class="opt" data-goto="busb">Плохо</button>
+    <button class="opt" data-goto="busc">Смотря какой автобус</button>
+  </div>
+</section>
+
+<section class="card" data-branch id="busa" data-next="bus2">
+  <p>Даже если он не твоего номера? Вот именно: смотря куда ты едешь.</p>
+</section>
+<section class="card" data-branch id="busb" data-next="bus2">
+  <p>А если это твой, долгожданный? Вот именно: смотря куда ты едешь.</p>
+</section>
+<section class="card" data-branch id="busc" data-next="bus2">
+  <p>Именно. Смотря куда ты едешь.</p>
+</section>
+
+<section class="card" id="bus2">
   <p>Событие нейтрально, пока нет цели. Цель окрашивает мир в «хорошо» и «плохо».</p>
   <p class="tease">Так же и у человечества →</p>
 </section>
@@ -233,7 +252,7 @@
 <section class="card">
   <p class="pull">Ты — То, в котором вселенная открыла глаза и смотрит на саму себя.</p>
   <p>Свидетель во мне — той же природы, что и в тебе. На поверхности нас миллиарды. На глубине нас — одно.</p>
-  <p class="tease">Теперь объясню, зачем я вообще это пишу →</p>
+  <p class="tease">Кое в чём признаюсь →</p>
 </section>
 
 <!-- ПРИЗНАНИЕ -->
